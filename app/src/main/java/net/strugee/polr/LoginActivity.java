@@ -37,6 +37,7 @@ public class LoginActivity extends AppCompatActivity {
      * Keep track of the login task to ensure we can cancel it if requested.
      */
     private UserLoginTask mAuthTask = null;
+    private InitialConnectionTask mConnectTask = null;
 
     // UI references.
     private View mUsernameLoginFormView;
@@ -102,6 +103,10 @@ public class LoginActivity extends AppCompatActivity {
      * there are errors in the URL or connection, the user is asked to try again.
      */
     private void attemptConnect() {
+        if (mConnectTask != null) {
+            return;
+        }
+
         boolean cancel = false;
         View focusView = null;
 
@@ -121,15 +126,20 @@ public class LoginActivity extends AppCompatActivity {
             cancel = true;
         }
 
+        // Disable elements while we try to connect to Polr
+        mUrlView.setEnabled(false);
+        mInstanceConnectButton.setEnabled(false);
+        mInstanceConnectButton.setText(R.string.connecting);
+
         if (cancel) {
             // There was an error; don't move on and focus the first
             // form field with an error.
             focusView.requestFocus();
         } else {
-            // Lock the URL field and show the rest of the login form
-            mUrlView.setEnabled(false);
-            mInstanceConnectButton.setVisibility(View.GONE);
-            mUsernameLoginFormView.setVisibility(View.VISIBLE);
+            // Connect
+            // TODO
+            mConnectTask = new InitialConnectionTask(url);
+            mConnectTask.execute((Void) null);
         }
     }
 
@@ -232,6 +242,56 @@ public class LoginActivity extends AppCompatActivity {
             // and hide the relevant UI components.
             mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
             mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
+        }
+    }
+
+    /**
+     * Represents an asynchronous connection task used to connect to Polr.
+     */
+    public class InitialConnectionTask extends AsyncTask<Void, Void, Boolean> {
+
+        private final String mUrl;
+
+        InitialConnectionTask(String url) {
+            mUrl = url;
+        }
+
+        @Override
+        protected Boolean doInBackground(Void... params) {
+            // TODO: attempt to connect to Polr
+
+            try {
+                // Simulate network access.
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                return false;
+            }
+
+            return false;
+        }
+
+        @Override
+        protected void onPostExecute(final Boolean success) {
+            mConnectTask = null;
+
+            if (success) {
+                // Show the rest of the login form
+                mInstanceConnectButton.setVisibility(View.GONE);
+                mUsernameLoginFormView.setVisibility(View.VISIBLE);
+                //finish();
+            } else {
+                // Something went wrong
+                mUrlView.setEnabled(true);
+                mInstanceConnectButton.setEnabled(true);
+                mInstanceConnectButton.setText(R.string.action_sign_in);
+                mUrlView.setError(getString(R.string.error_connection_failure));
+                mUrlView.requestFocus();
+            }
+        }
+
+        @Override
+        protected void onCancelled() {
+            mConnectTask = null;
         }
     }
 

@@ -10,9 +10,11 @@
     <string name="confirm_anonymous">Are you sure you want to skip sign in? You won\'t be able to keep track of your shortened URLs or their statistics.</string>
     <string name="continue_anonymously">Continue</string>
     <string name="cancel_anonymous">Cancel</string>
+    <string name="connecting">Connecting</string>
     <string name="error_invalid_url">This URL is invalid</string>
     <string name="error_invalid_username">This username is invalid</string>
     <string name="error_invalid_password">This password is too short</string>
     <string name="error_incorrect_password">This password is incorrect</string>
+    <string name="error_connection_failure">Couldn\'t find Polr</string>
     <string name="error_field_required">This field is required</string>
 </resources>
