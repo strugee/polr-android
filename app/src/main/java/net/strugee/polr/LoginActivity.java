@@ -3,9 +3,7 @@ package net.strugee.polr;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
-import android.content.pm.PackageManager;
-import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
+import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.app.LoaderManager.LoaderCallbacks;
 
@@ -65,12 +63,10 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
         // Set up the login form.
-        mUsernameLoginFormView = (View) findViewById(R.id.username_login_form);
         mUrlView = (EditText) findViewById(R.id.url);
-
         mUsernameView = (AutoCompleteTextView) findViewById(R.id.username);
-
         mPasswordView = (EditText) findViewById(R.id.password);
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
@@ -83,6 +79,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             }
         });
 
+        // Set up the login form buttons.
         mInstanceConnectButton = (Button) findViewById(R.id.instance_connect_button);
         mInstanceConnectButton.setOnClickListener(new OnClickListener() {
             @Override
@@ -91,15 +88,24 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             }
         });
 
-        Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
-        mEmailSignInButton.setOnClickListener(new OnClickListener() {
+        Button mUsernameSignInButton = (Button) findViewById(R.id.email_sign_in_button);
+        mUsernameSignInButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
                 attemptLogin();
             }
         });
 
+        Button mUseAnonymousButton = (Button) findViewById(R.id.anonymous_sign_in_button);
+        mUseAnonymousButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                useAnonymously();
+            }
+        });
+
         mLoginFormView = findViewById(R.id.login_form);
+        mUsernameLoginFormView = findViewById(R.id.username_login_form);
         mProgressView = findViewById(R.id.login_progress);
     }
 
@@ -189,6 +195,15 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             mAuthTask = new UserLoginTask(email, password);
             mAuthTask.execute((Void) null);
         }
+    }
+
+    /**
+     * Prompts to make sure the user really meant to sign in anonymously, then
+     * proceeds with account creation.
+     */
+    private void useAnonymously() {
+        DialogFragment confirmAnonymousLoginDialogFragment = new ConfirmAnonymousLoginDialogFragment();
+        confirmAnonymousLoginDialogFragment.show(getSupportFragmentManager(), "login");
     }
 
     private boolean isPasswordValid(String password) {
