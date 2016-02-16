@@ -126,16 +126,16 @@ public class LoginActivity extends AppCompatActivity {
             cancel = true;
         }
 
-        // Disable elements while we try to connect to Polr
-        mUrlView.setEnabled(false);
-        mInstanceConnectButton.setEnabled(false);
-        mInstanceConnectButton.setText(R.string.connecting);
-
         if (cancel) {
             // There was an error; don't move on and focus the first
             // form field with an error.
             focusView.requestFocus();
         } else {
+            // Disable elements while we try to connect to Polr
+            mUrlView.setEnabled(false);
+            mInstanceConnectButton.setEnabled(false);
+            mInstanceConnectButton.setText(R.string.connecting);
+
             // Connect
             // TODO
             mConnectTask = new InitialConnectionTask(url);
@@ -267,7 +267,7 @@ public class LoginActivity extends AppCompatActivity {
                 return false;
             }
 
-            return false;
+            return true;
         }
 
         @Override
